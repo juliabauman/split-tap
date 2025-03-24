@@ -1,0 +1,38 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                count    min threads    max threads
+---------------  -------  -------------  -------------
+all                    1              1              1
+feature_counts         1              1              1
+sort_and_index         1              1              1
+umi_tools_count        1              1              1
+total                  4              1              1
+
+Select jobs to execute...
+
+[Fri Mar 21 15:50:11 2025]
+rule sort_and_index:
+    input: ../Data/BAM/Aligned.out.bam
+    output: ../Data/BAM/Aligned_sorted.out.bam, ../Data/BAM/Aligned_sorted.out.bam.bai
+    jobid: 3
+    resources: tmpdir=/tmp
+
+[Fri Mar 21 15:50:13 2025]
+Error in rule sort_and_index:
+    jobid: 3
+    output: ../Data/BAM/Aligned_sorted.out.bam, ../Data/BAM/Aligned_sorted.out.bam.bai
+    shell:
+        
+        ml load biology
+        ml load samtools/1.16.1
+        samtools sort ../Data/BAM/Aligned.out.bam -o ../Data/BAM/Aligned_sorted.out.bam
+        samtools index ../Data/BAM/Aligned_sorted.out.bam
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/.snakemake/log/2025-03-21T155010.377974.snakemake.log

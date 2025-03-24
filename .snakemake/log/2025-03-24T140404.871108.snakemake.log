@@ -1,0 +1,3 @@
+SyntaxError in line 25 of /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/rules/count.smk:
+EOL while scanning string literal
+  File "/oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/Snakefile", line 8, in <module>

@@ -1,0 +1,10 @@
+fastq:
+  r1: "../Data/fastq_files/chr19p_cdna_S1_L001_R1_001.fastq.gz"
+  r2: "../Data/fastq_files/chr19p_cdna_S1_L001_R2_001.fastq.gz"
+
+genome_dir: "../../../scRNA-DNA/20231023_SplitTAP_pilot/homebrewParse/genomes/hg38"
+gtf: "../Homo_sapiens.GRCh38.108_chr19.gtf"
+
+output_dir: "../Data"
+star_index: "../STAR"
+threads: 8

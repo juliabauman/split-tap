@@ -1,0 +1,35 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 8
+Rules claiming more threads will be scaled down.
+Job stats:
+job                count    min threads    max threads
+---------------  -------  -------------  -------------
+all                    1              1              1
+feature_counts         1              1              1
+umi_tools_count        1              1              1
+total                  3              1              1
+
+Select jobs to execute...
+
+[Fri Mar 21 21:58:03 2025]
+rule feature_counts:
+    input: ../Data/BAM/Aligned_sorted.out.bam
+    output: ../Data/summary.txt, ../Data/BAM/Aligned_sorted.out.bam.featureCounts
+    jobid: 2
+    resources: tmpdir=/tmp
+
+
+        featureCounts -t exon -g gene_id             -a ../Homo_sapiens.GRCh38.108_chr19.gtf             -o ../Data/summary.txt -R BAM ../Data/BAM/Aligned_sorted.out.bam
+        
+Waiting at most 5 seconds for missing files.
+MissingOutputException in line 1 of /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/rules/count.smk:
+Job Missing files after 5 seconds:
+../Data/BAM/Aligned_sorted.out.bam.featureCounts
+This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait.
+Job id: 2 completed successfully, but some output files are missing. 2
+Removing output files of failed job feature_counts since they might be corrupted:
+../Data/summary.txt
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/.snakemake/log/2025-03-21T215802.771385.snakemake.log

@@ -1,0 +1,23 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                count    min threads    max threads
+---------------  -------  -------------  -------------
+all                    1              1              1
+feature_counts         1              1              1
+umi_tools_count        1              1              1
+total                  3              1              1
+
+Select jobs to execute...
+
+[Fri Mar 21 23:12:16 2025]
+rule feature_counts:
+    input: ../Data/BAM/Aligned_sorted.out.bam
+    output: ../Data/summary.txt, ../Data/BAM/Aligned_sorted.out.bam.featureCounts.bam, ../Data/BAM/Aligned_sorted.out.bam.featureCounts.bam.bai
+    jobid: 2
+    resources: tmpdir=/tmp
+
+RuleException in line 1 of /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/rules/count.smk:
+NameError: The name "'output_dir'" is unknown in this context. Please make sure that you defined that variable. Also note that braces not used for variable access have to be escaped by repeating them, i.e. {{print $1}}
