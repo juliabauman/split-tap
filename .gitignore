@@ -1,0 +1,4 @@
+.snakemake/
+*.log
+*.err
+*.out
