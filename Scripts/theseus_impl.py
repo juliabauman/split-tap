@@ -1,8 +1,12 @@
 import argparse
 from pathlib import Path
 import pandas as pd
+import sys
 import numpy as np
 
+infile = sys.argv[1]
+out_file = sys.argv[2]
+thresh = float(sys.argv[3])
 
 def parse_args():
   parser = argparse.ArgumentParser(description="Filter guide assignments based on transcript-per-transcript thresholds.")
