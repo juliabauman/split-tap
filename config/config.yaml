@@ -2,7 +2,7 @@ paths:
   output_dir: "../Data"
 
 split_pipe:
-  genome_dir: "../../../scRNA-DNA/20231023_SplitTAP_pilot/homebrewParse/genomes/hg38" #Requires a valid STAR reference to run, but this does not actually get used so it doesn't matter what it is.
+  genome_dir: "../../../scRNA-DNA/20231023_SplitTAP_pilot/homebrewParse/genomes/hg38"
   chemistry: "v1"
   extra_args: ""
 
