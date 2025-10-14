@@ -1,10 +1,22 @@
+import argparse
+from pathlib import Path
 import pandas as pd
-import sys
 import numpy as np
 
-infile = sys.argv[1]
-out_file = sys.argv[2]
-thresh = float(sys.argv[3])
+
+def parse_args():
+  parser = argparse.ArgumentParser(description="Filter guide assignments based on transcript-per-transcript thresholds.")
+  parser.add_argument("input", help="Input TSV with UMI-level observations")
+  parser.add_argument("output", help="Output TSV after TPT filtering")
+  parser.add_argument("threshold", type=float, help="Minimum TPT to retain a transcript")
+  parser.add_argument("histogram", nargs="?", help="Optional path for the TPT histogram TSV")
+  return parser.parse_args()
+
+
+args = parse_args()
+infile = args.input
+out_file = args.output
+thresh = args.threshold
 
 def calculate_tpt(umi_obs):
 
@@ -61,8 +73,12 @@ umi_tpt = calculate_tpt(umi_obs)
 tpt_hist = compute_tpt_histogram(umi_tpt)
 
 # write histogram to text file
-hist_file = "Data/tpt_histogram.txt"
-tpt_hist.to_csv(hist_file, sep = '\t', index = False)
+if args.histogram:
+  hist_path = Path(args.histogram)
+else:
+  hist_path = Path(out_file).with_name("tpt_histogram.tsv")
+hist_path.parent.mkdir(parents=True, exist_ok=True)
+tpt_hist.to_csv(hist_path, sep = '\t', index = False)
 
 # filter transcripts based on minimum tpt
 print('Filtering for chimeric reads (min TPT = ' + str(thresh) + ')...')
