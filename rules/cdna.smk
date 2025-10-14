@@ -6,7 +6,7 @@ def _cdna_prepare_dir(sample):
 
 
 def cdna_prepared_fastq(sample, read):
-    return _cdna_prepare_dir(sample) / f"{sample}_cdna_R{read}_prepared.fastq.gz"
+    return _cdna_prepare_dir(sample) / f"{sample}_cdna_R{read}_trimmed.fastq.gz"
 
 
 def cdna_barcoded_fastq(sample):
@@ -51,7 +51,7 @@ def cdna_counts(sample):
     return OUTPUT_DIR / "cdna" / sample / "counts.tsv.gz"
 
 
-rule prepare_cdna_fastqs:
+rule trim_cdna_fastqs:
     input:
         r1=lambda wildcards: SAMPLES[wildcards.sample]["cdna"]["r1"],
         r2=lambda wildcards: SAMPLES[wildcards.sample]["cdna"]["r2"],
@@ -90,7 +90,7 @@ rule prepare_cdna_fastqs:
                 dest_path.symlink_to(Path(src).resolve())
 
 
-rule parse_cdna_fastqs:
+rule get_cdna_cell_barcodes:
     input:
         r1=lambda wildcards: cdna_prepared_fastq(wildcards.sample, 1),
         r2=lambda wildcards: cdna_prepared_fastq(wildcards.sample, 2),
