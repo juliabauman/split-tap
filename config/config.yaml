@@ -2,7 +2,7 @@ paths:
   output_dir: "../Data"
 
 split_pipe:
-  genome_dir: "../../../scRNA-DNA/20231023_SplitTAP_pilot/homebrewParse/genomes/hg38"
+  genome_dir: "../../../scRNA-DNA/20231023_SplitTAP_pilot/homebrewParse/genomes/hg38" #Requires a valid STAR reference to run, but this does not actually get used so it doesn't matter what it is.
   chemistry: "v1"
   extra_args: ""
 
@@ -12,7 +12,7 @@ star:
   extra_args: ""
 
 feature_counts:
-  gtf: "../Homo_sapiens.GRCh38.108_chr19.gtf"
+  gtf: "../Homo_sapiens.GRCh38.108.gtf"
   extra_args: "-t exon -g gene_id"
   threads: 4
 
@@ -20,19 +20,19 @@ umi_tools:
   extra_args: "--per-gene --gene-tag=XT --assigned-status-tag=XS --extract-umi-method=tag --umi-tag=UB"
 
 guide_processing:
-  tpt_threshold: 0.25
+  tpt_threshold: 0.25 #Fraction of UMI-guide combos per cell required to keep guide assignment, to combat chimerism in guide molecules
   histogram_dir: "../Data/guides/histograms"
   single_reference: "targetingGuides_Final.csv"
 
 samples:
-  chr19p:
+  sample1:
     index: "SAMPLE_I7"
     cdna:
       enabled: true
-      r1: "../Data/fastq_files/chr19p_cdna_S1_L001_R1_001.fastq.gz"
-      r2: "../Data/fastq_files/chr19p_cdna_S1_L001_R2_001.fastq.gz"
+      r1: "../Data/fastq_files/sample1_cdna_S1_L001_R1_001.fastq.gz"
+      r2: "../Data/fastq_files/sample1_cdna_S1_L001_R2_001.fastq.gz"
       trim:
-        enabled: false
+        enabled: true
         adapters:
           r1:
             - "AGATCGGAAGAGC"
