@@ -1,4 +1,0 @@
-WorkflowError in line 7 of /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/Snakefile:
-Failed to open source file /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/rules/preprocessing.smk
-FileNotFoundError: [Errno 2] No such file or directory: '/oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/rules/preprocessing.smk'
-  File "/oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/Snakefile", line 7, in <module>

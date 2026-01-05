@@ -1,4 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 20 of /oak/stanford/groups/larsms/Users/jrbauman/chr_tiling/TAPprimer_testing/snakemake/rules/count.smk:
-Missing input files for rule umi_tools_count:
-../Data/BAM/Aligned_sorted.out.bam.featureCounts
