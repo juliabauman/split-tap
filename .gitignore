@@ -1,0 +1,11 @@
+.snakemake/
+*.log
+*.err
+*.out
+
+# R session artifacts
+.RData
+.RHistory
+
+# Claude local / machine-specific settings
+.claude/settings.local.json

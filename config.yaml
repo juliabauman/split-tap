@@ -1,0 +1,62 @@
+# SPLiT-TAP-seq Pipeline Configuration
+#
+# Experiment: Test sequencing run for JB_ST_004 screen redo
+#
+
+# Guide mode: "single" for one guide per construct, "paired" for two guides per construct
+guide_mode: "single"  # Options: "single" or "paired"
+
+# Input data configuration
+data_dir: "../JB_ST_004/screen_test2/Data/fastq_files"  # Directory containing raw FASTQ files
+wells: ["C9"]
+
+# Barcoding configuration
+i7_barcodes_csv: "../JB_ST_004/screen_test/i7_barcodes.csv"  # CSV file with well, sample_name, i7_index columns
+
+# Guide library files
+spacer_pairs_csv: ""
+guide_library_csv: "../JB_ST_004/screen_test/allGuides_JB_ST_004.csv"  # Required for single mode
+
+# Reference genome configuration
+genome_dir: "/oak/stanford/groups/larsms/Users/jrbauman/scRNA-DNA/20231023_SplitTAP_pilot/homebrewParse/genomes/hg38"
+star_genome_dir: "../JB_ST_004/screen_test/STAR"
+star_gtf: "../JB_ST_004/screen_test/STAR/target_transcripts.gtf"
+
+# Processing options
+cdna_adapter_trim: true  # Set to true to enable cutadapt trimming for cDNA
+cdna_polya_trim: true  # Set to true to trim polyA sequences from cDNA
+
+# CROP processing options (paired mode)
+chimera_threshold: 0.25  # Threshold for chimera correction in theseus_impl.py
+
+# Threading configuration
+threads:
+  parse: 8
+  cutadapt: 20
+  star: 3
+  pigz: 20
+  featurecounts: 3
+
+# Resource configuration
+resources:
+  parse_mem: "30G"
+  star_mem: "32G"
+  featurecounts_mem: "10G"
+
+# Output directory
+output_dir: "../JB_ST_004/screen_test2/Data"
+
+# Scripts directory (relative to working directory)
+scripts_dir: "Scripts"
+
+# SCEPTRE preprocessing options
+sceptre:
+  # Cell filtering threshold - set this after inspecting the knee plot
+  # This is the number of cells (ranked by UMI count) to retain
+  cell_threshold: 300  # Update this after running 'snakemake inspect_plots'
+
+  # Maximum UMIs per cell - cells above this are filtered as potential multiplets
+  max_umi_per_cell: 300
+
+  # Visualization threshold for knee plot (just for the red line, doesn't affect filtering)
+  knee_plot_threshold: 100
