@@ -136,4 +136,4 @@ dependencies:
       - tqdm==4.67.1
       - typing-extensions==4.13.2
       - umap-learn==0.5.7
-prefix: /home/users/jrbauman/miniconda3/envs/split-tap
+prefix:
