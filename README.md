@@ -43,7 +43,7 @@ conda activate split-tap
 ```
 
 The environment includes:
-- **split-pipe** (v1.1.1) - SPLiT-seq barcode parsing
+- **split-pipe** (v1.1.1) - SPLiT-seq barcode parsing (Note: The Parse Biosciences software version used in this pipeline can be obtained free of charge through Parse's support email. Simply reach out to support@parsebiosciences.com and mention you'd like a copy of split-pipe v1.1.1" to use with split-tap.)
 - **cutadapt** (v4.6) - Adapter trimming
 - **STAR** - RNA-seq alignment (via subread package)
 - **samtools** - BAM file manipulation
