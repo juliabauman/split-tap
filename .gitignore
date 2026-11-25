@@ -5,7 +5,7 @@
 
 # R session artifacts
 .RData
-.RHistory
+.Rhistory
 
 # Claude local / machine-specific settings
 .claude/settings.local.json

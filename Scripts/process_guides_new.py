@@ -3,12 +3,14 @@ import csv
 import Bio.Align
 from Bio import SeqIO
 import gzip
+from collections import Counter
 
 #note: Use python3.9 versions of the modules
 
 input_fastq = sys.argv[1]
 output_txt = sys.argv[2]
 guide_library_csv = sys.argv[3]
+no_matches = sys.argv[4]
 summary_data = []
 
 print("Input FASTQ file: {0}".format(input_fastq))
@@ -22,8 +24,8 @@ def load_guide_sequences(filename):
         reader = csv.reader(infile)
         next(reader)  # Skip header
         for rows in reader:
-            guide_seq = rows[8]  # Assuming guide sequence is in the second column
-            guide_name = rows[4]  # Assuming guide name is in the first column
+            guide_seq = rows[8]
+            guide_name = rows[4]
             guide_dict[guide_seq] = guide_name
         keys = list(guide_dict.keys())[:5]
         for key in keys:
@@ -36,11 +38,17 @@ start_seq = "GAAAGGACGAAACACC"
 end_seq = "GTTTAAGAGCTATGCT"
 max_mismatches = 1
 
+
+#Keep a record of guides that do not match to dict, to help identify any spacers missing from input files 
+no_match_spacer_counts = Counter()
+
+
 def find_with_exact_matching(seq, pattern):
     return seq.find(pattern)  # Returns the position of the first match, or -1 if not found
 
 def find_guide_name(spacer, guide_dict):
     return guide_dict.get(spacer, "No match found")
+
 
 with open(output_txt, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter='\t')
@@ -64,7 +72,17 @@ with open(output_txt, 'w', newline='') as csvfile:
 
             if start_pos != -1 and end_pos != -1:
                 spacer_start = start_pos + len(start_seq)
-                spacer = read_seq[spacer_start:end_pos] if spacer_start < end_pos and end_pos - spacer_start < 23 else ""
+                spacer = read_seq[spacer_start:end_pos] if spacer_start < end_pos and end_pos - spacer_start < 24 else ""
                 gRNA_name = find_guide_name(spacer, guide_dict) if spacer else "No spacer found"
+                
+                if gRNA_name == "No match found" and spacer:
+                    no_match_spacer_counts[spacer] += 1
+
                 # Write each row immediately
                 writer.writerow([spacer, cell, umi, gRNA_name])
+
+
+with open(no_matches, "w") as out:
+    out.write("spacer\tcount\n")
+    for spacer, count in no_match_spacer_counts.most_common():
+        out.write(f"{spacer}\t{len(spacer)}\t{count}\n")

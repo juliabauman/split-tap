@@ -14,6 +14,11 @@ SCRIPTS_DIR = config["scripts_dir"]
 GENOME_DIR = config["genome_dir"]
 STAR_GENOME_DIR = config["star_genome_dir"]
 STAR_GTF = config["star_gtf"]
+CROP_QC = config.get("crop_fastq_qc", {})
+# split-pipe samples R2 reads in the window [100000, 1100000), so it needs the
+# fastq to contain >= 1,100,000 reads (not 1,000,000). Add a small margin.
+MIN_CROP_READS = int(CROP_QC.get("min_reads", 1_200_000))
+WARN_CROP_READS = int(CROP_QC.get("warn_reads", 10_000))
 
 # Validate guide mode
 if GUIDE_MODE not in ["single", "paired"]:
@@ -57,11 +62,6 @@ def get_final_outputs():
     # SCEPTRE preprocessing outputs
     outputs.append(f"{OUTPUT_DIR}/guide_cDNA_counts.tsv")
     outputs.append(f"{OUTPUT_DIR}/plots/cell_knee_plot.pdf")
-    outputs.append(f"{OUTPUT_DIR}/guide_cDNA_counts_filtered.tsv")
-    outputs.append(f"{OUTPUT_DIR}/plots/kept_cells_umi_histogram.pdf")
-    outputs.append(f"{OUTPUT_DIR}/sceptre_files/matrix.mtx")
-    outputs.append(f"{OUTPUT_DIR}/sceptre_files/features.tsv")
-    outputs.append(f"{OUTPUT_DIR}/sceptre_files/barcodes.tsv")
 
     return outputs
 
@@ -82,4 +82,3 @@ include: "rules/cdna_processing.smk"
 include: "rules/crop_processing.smk"
 include: "rules/star_alignment.smk"
 include: "rules/final_outputs.smk"
-include: "rules/sceptre_preprocessing.smk"

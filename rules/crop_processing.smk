@@ -13,6 +13,7 @@ def get_crop_fastqs(wildcards):
         raise ValueError(f"Expected at least 2 FASTQ files in {folder}, found {len(fastqs)}")
     return {"r1": fastqs[0], "r2": fastqs[1]}
 
+
 # PAIRED MODE RULES
 if GUIDE_MODE == "paired":
 
@@ -29,11 +30,30 @@ if GUIDE_MODE == "paired":
             python3 {SCRIPTS_DIR}/spacer_to_R1header.py {input.r1} {input.r2} {output.r1} {output.r2}
             """
 
-    rule crop_parse_barcoding_paired:
-        """Parse barcoding on spacer-modified CROP files"""
+    rule crop_boost_fastqs_paired:
+        """Ensure spacer-added CROP fastqs have >= min reads (split-pipe requires 1M)"""
         input:
             r1 = f"{OUTPUT_DIR}/fastq_files/{{well}}/CROP_R1_spacerAdded.fq.gz",
             r2 = f"{OUTPUT_DIR}/fastq_files/{{well}}/CROP_R2_spacerAdded.fq.gz"
+        output:
+            r1 = temp(f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/CROP_R1_boosted.fq.gz"),
+            r2 = temp(f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/CROP_R2_boosted.fq.gz")
+        params:
+            min_reads = MIN_CROP_READS,
+            warn_reads = WARN_CROP_READS
+        threads: 1
+        shell:
+            r"""
+            set -euo pipefail
+            mkdir -p $(dirname {output.r1})
+            bash {SCRIPTS_DIR}/boost_fastqs_to_min_reads.sh {input.r1} {input.r2} {output.r1} {output.r2} {params.min_reads} {params.warn_reads}
+            """
+
+    rule crop_parse_barcoding_paired:
+        """Parse barcoding on spacer-modified CROP files"""
+        input:
+            r1 = f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/CROP_R1_boosted.fq.gz",
+            r2 = f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/CROP_R2_boosted.fq.gz"
         output:
             temp(f"{OUTPUT_DIR}/barcoded_fastqs/{{well}}/CROP_barcode_head.fastq.gz")
         params:
@@ -241,10 +261,11 @@ if GUIDE_MODE == "paired":
             spacer_pairs = config["spacer_pairs_csv"]
         output:
             ids = f"{OUTPUT_DIR}/CROP_ids_dedup.txt",
-            counts = f"{OUTPUT_DIR}/CROP_counts.txt"
+            counts = f"{OUTPUT_DIR}/CROP_counts.txt",
+            nomatch = f"{OUTPUT_DIR}/nomatch_summary.txt"
         shell:
             """
-            python3 {SCRIPTS_DIR}/id_guides.py {input.summary} {input.spacer_pairs} {output.ids} {output.counts}
+            python3 {SCRIPTS_DIR}/id_guides2.py {input.summary} {input.spacer_pairs} {output.ids} {output.counts} {output.nomatch}
             """
 
     rule crop_trna_assign:
@@ -261,10 +282,30 @@ if GUIDE_MODE == "paired":
 # SINGLE MODE RULES
 else:  # GUIDE_MODE == "single"
 
+   #Ensure all CROP fastqs have at least 1M reads (required for splitpipe barcoding)
+    rule crop_boost_fastqs:
+       input:
+          unpack(get_crop_fastqs)
+       output:
+          r1 = temp(f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/R1.fastq.gz"),
+          r2 = temp(f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/R2.fastq.gz"),
+       params:
+          min_reads = MIN_CROP_READS,
+          warn_reads = WARN_CROP_READS
+       threads: 1
+       shell:
+          r"""
+          set -euo pipefail
+          mkdir -p $(dirname {output.r1})
+
+          bash {SCRIPTS_DIR}/boost_fastqs_to_min_reads.sh {input.r1} {input.r2} {output.r1} {output.r2} {params.min_reads} {params.warn_reads}
+        """
+
     rule crop_parse_barcoding_single:
         """Parse barcoding on CROP files"""
         input:
-            unpack(get_crop_fastqs)
+            r1 = f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/R1.fastq.gz",
+            r2 = f"{OUTPUT_DIR}/boosted_fastqs/{{well}}/R2.fastq.gz"
         output:
             temp(f"{OUTPUT_DIR}/barcoded_fastqs/{{well}}/CROP_barcode_head.fastq.gz")
         params:
@@ -314,12 +355,13 @@ else:  # GUIDE_MODE == "single"
             fastq = f"{OUTPUT_DIR}/barcoded_fastqs/all_CROP_barcoded.fastq.gz",
             guide_lib = config["guide_library_csv"]
         output:
-            f"{OUTPUT_DIR}/guides.txt"
+            guides = f"{OUTPUT_DIR}/guides.txt",
+            nomatch = f"{OUTPUT_DIR}/nonmatching_spacer_summary.txt"
         shell:
             """
             ml biology
             ml py-biopython
-            python3 {SCRIPTS_DIR}/process_guides_new.py {input.fastq} {output} {input.guide_lib}
+            python3 {SCRIPTS_DIR}/process_guides_new.py {input.fastq} {output.guides} {input.guide_lib} {output.nomatch}
             """
 
     rule crop_theseus_single:

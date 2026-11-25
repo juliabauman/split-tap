@@ -62,8 +62,10 @@ rule cdna_cutadapt_trim:
         ml python/3.6
         cutadapt -j {threads} \
             -a "AGATCGGAAGAGC" \
-            -a A{{10}}N{{100}} \
+            -a "A{{10}}" \
             -q 0,20 \
+            -e 0.1 \
+            --no-indels \
             --minimum-length 20 \
             -o {output} \
             {input}
