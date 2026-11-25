@@ -1,4 +1,4 @@
-# Rules for combining final outputs and SCEPTRE preprocessing
+# Rules for combining final outputs
 
 rule combine_cdna_counts:
     """Combine cDNA counts from all wells"""
@@ -15,7 +15,7 @@ rule combine_cdna_counts:
 
 
 rule combine_guide_cdna_counts:
-    """Combine guide and cDNA counts into single file for SCEPTRE"""
+    """Combine guide and cDNA counts into a single long-format file"""
     input:
         cdna = f"{OUTPUT_DIR}/combined_cDNA_counts.tsv",
         guides = f"{OUTPUT_DIR}/CROP_counts.txt" if GUIDE_MODE == "paired" else f"{OUTPUT_DIR}/guide_counts.txt"
@@ -61,6 +61,6 @@ rule create_knee_plot:
         plot = f"{OUTPUT_DIR}/plots/cell_knee_plot.pdf",
         summary = f"{OUTPUT_DIR}/cell_umi_summary.tsv"
     params:
-        test_thresh = config.get("sceptre", {}).get("knee_plot_threshold", 700000)
+        test_thresh = config.get("knee_plot_threshold", 700000)
     script:
         "../Scripts/create_knee_plot.R"

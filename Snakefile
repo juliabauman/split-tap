@@ -59,13 +59,13 @@ def get_final_outputs():
     else:  # single mode
         outputs.append(f"{OUTPUT_DIR}/guide_counts.txt")
 
-    # SCEPTRE preprocessing outputs
+    # Combined guide + cDNA counts and knee plot
     outputs.append(f"{OUTPUT_DIR}/guide_cDNA_counts.tsv")
     outputs.append(f"{OUTPUT_DIR}/plots/cell_knee_plot.pdf")
 
     return outputs
 
-# Main rule - runs full pipeline including SCEPTRE preprocessing
+# Main rule - runs full pipeline
 rule all:
     input:
         get_final_outputs()

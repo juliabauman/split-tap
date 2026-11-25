@@ -52,14 +52,6 @@ output_dir: "../JB_ST_001/final_reprocess/outputs"
 # Scripts directory (relative to cwd)
 scripts_dir: "Scripts"
 
-# SCEPTRE preprocessing options
-sceptre:
-  # Cell filtering threshold - set this after inspecting the knee plot
-  # This is the number of cells (ranked by UMI count) to retain
-  cell_threshold: 700000  # Update this after running 'snakemake inspect_plots'
-
-  # Maximum UMIs per cell - cells above this are filtered as potential multiplets
-  max_umi_per_cell: 300
-
-  # Visualization threshold for knee plot (just for the red line, doesn't affect filtering)
-  knee_plot_threshold: 700000
+# Knee plot: number of cells (ranked by UMI count) at which to draw the red reference line.
+# Visualization only - the pipeline does not filter cells.
+knee_plot_threshold: 700000
