@@ -1,12 +1,12 @@
 # Perturb-seq Analysis Pipeline
 
-A Snakemake pipeline for processing Perturb-seq data with support for both single and paired guide modes.
+A Snakemake pipeline for processing SPLiT-TAP-seq data with support for both single and paired guide modes.
 
 ## Overview
 
-This pipeline processes Perturb-seq data from raw FASTQ files through to final count matrices, supporting:
-- **Single guide mode**: One guide per construct (e.g., promoter targeting)
-- **Paired guide mode**: Two guides per construct (e.g., enhancer pairs)
+This pipeline processes SPLiT-TAP-seq data from raw FASTQ files through to cDNA and gRNA UMI counts per cell, supporting:
+- **Single guide mode**: CROP-seq-opti guide expression vector
+- **Paired guide mode**: CROP-seq-multi guide expression vector
 
 The pipeline handles both cDNA (for gene expression) and CROP (for guide assignment) data in parallel.
 
@@ -160,7 +160,7 @@ snakemake --profile slurm --jobs 20
    - Chimera correction (theseus)
    - Filter by chimera results
    - Assign guide pair IDs
-   - Assign tRNA for covariate
+   - Assign tRNA per guide pair
 
 ### Single Guide Mode
 2. **CROP Processing**:
@@ -177,7 +177,7 @@ snakemake --profile slurm --jobs 20
 - `combined_cDNA_counts.tsv` - Combined gene expression counts across all wells
 - **Paired mode**:
   - `CROP_counts.txt` - Guide pair counts per cell
-  - `tRNA_assignments.txt` - tRNA assignments for covariates
+  - `tRNA_assignments.txt` - tRNA assignments per guide pair/cell
 - **Single mode**:
   - `guide_counts.txt` - Single guide counts per cell
 
@@ -201,11 +201,6 @@ snakemake --profile slurm --jobs 20
 ### Missing Input Files
 Ensure your data directory structure matches the expected format (WELL_1 and WELL_2 folders)
 
-### Module Conflicts
-The pipeline uses various modules. If you encounter conflicts:
-- Purge modules before running: `module purge`
-- Let Snakemake load required modules per rule
-
 ### Memory Issues
 Increase memory in `config.yaml`:
 - `resources.parse_mem`: For split-pipe
@@ -221,9 +216,3 @@ Adjust thread counts in `config.yaml` based on available resources
 - CROP UMI collapse is parallelized into 58 chunks by default
 - cDNA cutadapt trimming is always enabled (removes adapters and polyA tails)
 - All required software is included in the `environment.yml` conda environment
-
-## Contact
-
-For questions or issues, consult the original analysis scripts in:
-- `JB_ST_001/screen_reprocess/Scripts/` (single guide mode)
-- `JB_ST_002/screen/Scripts/` (paired guide mode)
